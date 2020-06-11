@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Simple Map</title>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+      <!--Import materialize.css-->
+      <link type="text/css" rel="stylesheet" href="./css/materialize.min.css"  media="screen,projection"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    </style>
+      <nav>
+    <div class="nav-wrapper blue darken-4 white-text">
+      <a href="#" class="brand-logo">SearchHosDemo</a>
+      <ul id="nav-mobile" class="right hide-on-med-and-down">
+        <li><a href="#">Home</a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+  <h3> Hey user! We apologise for poor Ui.Search and discover the closest hospitals you can get health care around.</h3>
+  <input type="text" id="searchBox" placeholder="Enter how many kilometers away you want to search"/>
+    <button class="btn" onclick="searchFunction()">Search</button>
+  </head>
+  <body>
+    <div id="mymap" style="height: 100vh; width: 100vw"> </div>
+
+    <div id="foot" class="blue darken-4"><div>
+       <footer class="page-footer">
+          <div class="container">
+            <div class="row">
+              <div class="col l6 s12">
+                <h5 class="white-text">This is Searchos demo app. </h5>
+                <p class="grey-text text-lighten-4">Covid 19 is real. Stay Safe</p>
+              </div>
+              <div class="col l4 offset-l2 s12">
+                <h5 class="white-text">Links</h5>
+                <ul>
+                  <li><a class="grey-text text-lighten-3" href="#!">Link 1</a></li>
+                  <li><a class="grey-text text-lighten-3" href="#!">Link 2</a></li>
+                  <li><a class="grey-text text-lighten-3" href="#!">Link 3</a></li>
+                  <li><a class="grey-text text-lighten-3" href="#!">Link 4</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="footer-copyright">
+            <div class="container">
+            © 2020 SearchHos. Sorry for abysmal UI. We would surely improve this.
+            <a class="grey-text text-lighten-4 right" href="#!">More Links</a></div>
+    
+    
+<script type="text/javascript"> 
+var map;
+var service;
+var marker;
+var lat;
+var lng;
+
+function initialize(){
+  navigator.geolocation.getCurrentPosition(success,error)
+  function success(position){
+   lat=position.coords.latitude;
+   lng=position.coords.longitude;
+   map=new google.maps.Map(document.getElementById('mymap'),{zoom:16,center:{lat,lng}})
+   marker=new google.maps.Marker({map:map,position:{lat,lng}})
+  }
+  function error(err){
+                     }
+}
+
+const searchFunction=()=>{
+  let enteredFigure=document.getElementById('searchBox');
+  if(isNaN(enteredFigure.value)||enteredFigure.value=="")
+    {
+      alert("please enter a valid numerical radius in kilometers")
+      enteredFigure.value=" ";
+    }
+  else{
+  var request = {
+    location:{lat,lng},
+    radius:enteredFigure.value*1000,
+    type: ['hospital']
+  };
+
+  service = new google.maps.places.PlacesService(map);
+  service.nearbySearch(request, callback);
+}
+}
+
+function callback(results, status){
+  let enteredValue=document.getElementById("searchBox");
+    if(status==google.maps.places.PlacesServiceStatus.ZERO_RESULTS)
+      {
+        alert(`Sorry to say, but no hospital was found within ${enteredValue.value} kilometers of your location. You may try a larger radius`);
+       enteredValue.value="";
+      } 
+ else if (status==google.maps.places.PlacesServiceStatus.OK) 
+     {
+      var howMany=results.length
+      alert(`Your search returned ${howMany} hospitals. Sorry we cant display these results in a way you would have liked. Keep Clicking ok to see them all`);
+       results.forEach(eachHospital=>
+        {alert(`${eachHospital.name}, ${eachHospital.vicinity}`)
+        });
+        enteredValue.value="";
+     }
+    
+   
+  else {
+     alert("Sorry, Your search was not successful");
+      console.log(results)
+       enteredValue.value=""; 
+     }
+     } 
+     </script>
+    <script type='text/javascript' src='https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyCw-rypAWlPW5Vhds1rwkYI8VSaqS5PKx8&callback=initialize'></script>
+    
+  </body>
+</html>
